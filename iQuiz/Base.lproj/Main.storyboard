@@ -1,24 +1,259 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.16" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="nav-controller">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.12"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Quiz List View Controller-->
+        <scene sceneID="nav-scene">
+            <objects>
+                <navigationController id="nav-controller" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="nav-bar">
+                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="root-segue"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nav-first-responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1000" y="0"/>
+        </scene>
+        <!--Quiz List-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="QuizListViewController" customModule="iQuiz" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" xcode11CocoaTouchSystemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="table-view">
+                                <rect key="frame" x="0.0" y="103" width="393" height="715"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="table-view" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="table-top"/>
+                            <constraint firstItem="table-view" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="table-leading"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="table-view" secondAttribute="trailing" id="table-trailing"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="table-view" secondAttribute="bottom" id="table-bottom"/>
+                        </constraints>
                     </view>
+                    <navigationItem key="navigationItem" title="iQuiz" id="nav-item">
+                        <barButtonItem key="rightBarButtonItem" title="Settings" id="settings-btn">
+                            <connections>
+                                <action selector="settingsTapped" destination="BYZ-38-t0r" id="settings-action"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="tableView" destination="table-view" id="table-outlet"/>
+                        <segue destination="question-vc" kind="show" identifier="ShowQuestion" id="show-question-segue"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="0" y="0"/>
+        </scene>
+        <!--Question View Controller-->
+        <scene sceneID="question-scene">
+            <objects>
+                <viewController storyboardIdentifier="QuestionViewController" id="question-vc" customClass="QuestionViewController" customModule="iQuiz" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="question-view">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Question Text" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="question-label">
+                                <rect key="frame" x="20" y="120" width="353" height="60"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="answers-stack">
+                                <rect key="frame" x="20" y="200" width="353" height="400"/>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="submit-btn">
+                                <rect key="frame" x="146.66666666666666" y="650" width="100" height="40"/>
+                                <state key="normal" title="Submit"/>
+                                <connections>
+                                    <action selector="submitTapped:" destination="question-vc" eventType="touchUpInside" id="submit-action"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="💡 Tip: Swipe right to submit, swipe left to abandon" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="swipe-tip">
+                                <rect key="frame" x="20" y="720" width="353" height="40"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" systemColor="secondaryLabelColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="question-safe"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="question-label" firstAttribute="leading" secondItem="question-safe" secondAttribute="leading" constant="20" id="q-label-leading"/>
+                            <constraint firstItem="question-safe" firstAttribute="trailing" secondItem="question-label" secondAttribute="trailing" constant="20" id="q-label-trailing"/>
+                            <constraint firstItem="question-label" firstAttribute="top" secondItem="question-safe" secondAttribute="top" constant="20" id="q-label-top"/>
+                            <constraint firstItem="answers-stack" firstAttribute="leading" secondItem="question-safe" secondAttribute="leading" constant="20" id="stack-leading"/>
+                            <constraint firstItem="question-safe" firstAttribute="trailing" secondItem="answers-stack" secondAttribute="trailing" constant="20" id="stack-trailing"/>
+                            <constraint firstItem="answers-stack" firstAttribute="top" secondItem="question-label" secondAttribute="bottom" constant="20" id="stack-top"/>
+                            <constraint firstItem="submit-btn" firstAttribute="centerX" secondItem="question-view" secondAttribute="centerX" id="submit-center"/>
+                            <constraint firstItem="submit-btn" firstAttribute="top" secondItem="answers-stack" secondAttribute="bottom" constant="50" id="submit-top"/>
+                            <constraint firstItem="swipe-tip" firstAttribute="leading" secondItem="question-safe" secondAttribute="leading" constant="20" id="tip-leading"/>
+                            <constraint firstItem="question-safe" firstAttribute="trailing" secondItem="swipe-tip" secondAttribute="trailing" constant="20" id="tip-trailing"/>
+                            <constraint firstItem="swipe-tip" firstAttribute="top" secondItem="submit-btn" secondAttribute="bottom" constant="20" id="tip-top"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="answersStackView" destination="answers-stack" id="stack-outlet"/>
+                        <outlet property="questionLabel" destination="question-label" id="q-label-outlet"/>
+                        <outlet property="submitButton" destination="submit-btn" id="submit-outlet"/>
+                        <segue destination="answer-vc" kind="show" identifier="ShowAnswer" id="show-answer-segue"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="question-first" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="500" y="0"/>
+        </scene>
+        <!--Answer View Controller-->
+        <scene sceneID="answer-scene">
+            <objects>
+                <viewController id="answer-vc" customClass="AnswerViewController" customModule="iQuiz" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="answer-view">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Question Text" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="answer-q-label">
+                                <rect key="frame" x="20" y="120" width="353" height="60"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Correct!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="result-label">
+                                <rect key="frame" x="20" y="220" width="353" height="30"/>
+                                <fontDescription key="fontDescription" type="system" weight="bold" pointSize="24"/>
+                                <color key="textColor" systemColor="systemGreenColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Correct Answer: Answer" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="correct-answer-label">
+                                <rect key="frame" x="20" y="280" width="353" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="next-btn">
+                                <rect key="frame" x="146.66666666666666" y="400" width="100" height="40"/>
+                                <state key="normal" title="Next"/>
+                                <connections>
+                                    <action selector="nextTapped:" destination="answer-vc" eventType="touchUpInside" id="next-action"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="💡 Tip: Swipe right for next, swipe left to abandon" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="answer-swipe-tip">
+                                <rect key="frame" x="20" y="470" width="353" height="40"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" systemColor="secondaryLabelColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="answer-safe"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="answer-q-label" firstAttribute="leading" secondItem="answer-safe" secondAttribute="leading" constant="20" id="aq-label-leading"/>
+                            <constraint firstItem="answer-safe" firstAttribute="trailing" secondItem="answer-q-label" secondAttribute="trailing" constant="20" id="aq-label-trailing"/>
+                            <constraint firstItem="answer-q-label" firstAttribute="top" secondItem="answer-safe" secondAttribute="top" constant="20" id="aq-label-top"/>
+                            <constraint firstItem="result-label" firstAttribute="leading" secondItem="answer-safe" secondAttribute="leading" constant="20" id="result-leading"/>
+                            <constraint firstItem="answer-safe" firstAttribute="trailing" secondItem="result-label" secondAttribute="trailing" constant="20" id="result-trailing"/>
+                            <constraint firstItem="result-label" firstAttribute="top" secondItem="answer-q-label" secondAttribute="bottom" constant="40" id="result-top"/>
+                            <constraint firstItem="correct-answer-label" firstAttribute="leading" secondItem="answer-safe" secondAttribute="leading" constant="20" id="correct-leading"/>
+                            <constraint firstItem="answer-safe" firstAttribute="trailing" secondItem="correct-answer-label" secondAttribute="trailing" constant="20" id="correct-trailing"/>
+                            <constraint firstItem="correct-answer-label" firstAttribute="top" secondItem="result-label" secondAttribute="bottom" constant="30" id="correct-top"/>
+                            <constraint firstItem="next-btn" firstAttribute="centerX" secondItem="answer-view" secondAttribute="centerX" id="next-center"/>
+                            <constraint firstItem="next-btn" firstAttribute="top" secondItem="correct-answer-label" secondAttribute="bottom" constant="90" id="next-top"/>
+                            <constraint firstItem="answer-swipe-tip" firstAttribute="leading" secondItem="answer-safe" secondAttribute="leading" constant="20" id="answer-tip-leading"/>
+                            <constraint firstItem="answer-safe" firstAttribute="trailing" secondItem="answer-swipe-tip" secondAttribute="trailing" constant="20" id="answer-tip-trailing"/>
+                            <constraint firstItem="answer-swipe-tip" firstAttribute="top" secondItem="next-btn" secondAttribute="bottom" constant="30" id="answer-tip-top"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="correctAnswerLabel" destination="correct-answer-label" id="correct-outlet"/>
+                        <outlet property="nextButton" destination="next-btn" id="next-outlet"/>
+                        <outlet property="questionLabel" destination="answer-q-label" id="aq-label-outlet"/>
+                        <outlet property="resultLabel" destination="result-label" id="result-outlet"/>
+                        <segue destination="finished-vc" kind="show" identifier="ShowFinished" id="show-finished-segue"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="answer-first" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1000" y="0"/>
+        </scene>
+        <!--Finished View Controller-->
+        <scene sceneID="finished-scene">
+            <objects>
+                <viewController id="finished-vc" customClass="FinishedViewController" customModule="iQuiz" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="finished-view">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Perfect!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="performance-label">
+                                <rect key="frame" x="20" y="300" width="353" height="50"/>
+                                <fontDescription key="fontDescription" type="system" weight="bold" pointSize="36"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3 of 3 correct" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="score-label">
+                                <rect key="frame" x="20" y="380" width="353" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="finished-next-btn">
+                                <rect key="frame" x="146.66666666666666" y="500" width="100" height="40"/>
+                                <state key="normal" title="Back to Quiz List"/>
+                                <connections>
+                                    <action selector="nextTapped:" destination="finished-vc" eventType="touchUpInside" id="finished-next-action"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="finished-safe"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="performance-label" firstAttribute="centerX" secondItem="finished-view" secondAttribute="centerX" id="perf-center-x"/>
+                            <constraint firstItem="performance-label" firstAttribute="centerY" secondItem="finished-view" secondAttribute="centerY" constant="-100" id="perf-center-y"/>
+                            <constraint firstItem="performance-label" firstAttribute="leading" secondItem="finished-safe" secondAttribute="leading" constant="20" id="perf-leading"/>
+                            <constraint firstItem="finished-safe" firstAttribute="trailing" secondItem="performance-label" secondAttribute="trailing" constant="20" id="perf-trailing"/>
+                            <constraint firstItem="score-label" firstAttribute="centerX" secondItem="finished-view" secondAttribute="centerX" id="score-center-x"/>
+                            <constraint firstItem="score-label" firstAttribute="top" secondItem="performance-label" secondAttribute="bottom" constant="30" id="score-top"/>
+                            <constraint firstItem="score-label" firstAttribute="leading" secondItem="finished-safe" secondAttribute="leading" constant="20" id="score-leading"/>
+                            <constraint firstItem="finished-safe" firstAttribute="trailing" secondItem="score-label" secondAttribute="trailing" constant="20" id="score-trailing"/>
+                            <constraint firstItem="finished-next-btn" firstAttribute="centerX" secondItem="finished-view" secondAttribute="centerX" id="finished-next-center"/>
+                            <constraint firstItem="finished-next-btn" firstAttribute="top" secondItem="score-label" secondAttribute="bottom" constant="90" id="finished-next-top"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="nextButton" destination="finished-next-btn" id="finished-next-outlet"/>
+                        <outlet property="performanceLabel" destination="performance-label" id="perf-outlet"/>
+                        <outlet property="scoreLabel" destination="score-label" id="score-outlet"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="finished-first" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1500" y="0"/>
         </scene>
     </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemGreenColor">
+            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
 </document>
