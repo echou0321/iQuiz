@@ -21,7 +21,6 @@ class QuestionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Ensure quiz is set before setting up the view
         guard quiz != nil else {
             fatalError("Quiz must be set before view loads. Make sure prepare(for segue:) sets the quiz property.")
         }
@@ -45,10 +44,7 @@ class QuestionViewController: UIViewController {
         let question = quiz.questions[currentQuestionIndex]
         questionLabel.text = question.text
         
-        // Clear previous answer buttons
         answersStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        
-        // Create answer buttons
         for (index, answer) in question.answers.enumerated() {
             let button = UIButton(type: .system)
             button.setTitle(answer, for: .normal)
@@ -64,9 +60,6 @@ class QuestionViewController: UIViewController {
             button.addTarget(self, action: #selector(answerSelected(_:)), for: .touchUpInside)
             
             answersStackView.addArrangedSubview(button)
-            
-            // Add height constraint to ensure all buttons are the same size
-            // Do this after adding to stack view so constraints work properly
             button.heightAnchor.constraint(equalToConstant: 60).isActive = true
         }
         
@@ -104,12 +97,10 @@ class QuestionViewController: UIViewController {
     }
     
     private func setupSwipeGestures() {
-        // Swipe right to submit
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeRight))
         swipeRight.direction = .right
         view.addGestureRecognizer(swipeRight)
         
-        // Swipe left to abandon quiz
         let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeLeft))
         swipeLeft.direction = .left
         view.addGestureRecognizer(swipeLeft)
@@ -122,18 +113,7 @@ class QuestionViewController: UIViewController {
     }
     
     @objc private func handleSwipeLeft() {
-        let alert = UIAlertController(
-            title: "Abandon Quiz?",
-            message: "Are you sure you want to abandon this quiz? Your progress will be lost.",
-            preferredStyle: .alert
-        )
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Abandon", style: .destructive) { _ in
-            self.navigationController?.popToRootViewController(animated: true)
-        })
-        
-        present(alert, animated: true)
+        showAbandonQuizAlert()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

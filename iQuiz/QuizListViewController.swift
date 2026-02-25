@@ -12,19 +12,53 @@ class QuizListViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     let quizData = QuizData.shared
+    private let settingsManager = SettingsManager.shared
+    private var refreshTimer: Timer?
+    private var refreshControl: UIRefreshControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupTableView()
         setupToolbar()
+        setupPullToRefresh()
+        setupNotifications()
+        loadQuizzesFromNetwork()
+        setupTimedRefresh()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupTimedRefresh()
+        tableView.reloadData()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appDidBecomeActive),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        refreshTimer?.invalidate()
+        refreshTimer = nil
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
+    }
+    
+    @objc private func appDidBecomeActive() {
+        setupTimedRefresh()
+        loadQuizzesFromNetwork(silent: true)
     }
     
     private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "QuizCell")
-        // Enable subtitle style for cells
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 60
     }
@@ -40,22 +74,85 @@ class QuizListViewController: UIViewController {
         navigationItem.rightBarButtonItem = settingsButton
     }
     
-    @objc private func settingsTapped() {
-        let alert = UIAlertController(
-            title: "Settings",
-            message: "Settings go here",
-            preferredStyle: .alert
+    private func setupPullToRefresh() {
+        refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshQuizzes), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+    }
+    
+    private func setupNotifications() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(quizzesUpdated),
+            name: QuizData.quizzesUpdatedNotification,
+            object: nil
         )
         
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(networkErrorOccurred),
+            name: QuizData.networkErrorNotification,
+            object: nil
+        )
+    }
+    
+    private func setupTimedRefresh() {
+        // Invalidate existing timer
+        refreshTimer?.invalidate()
         
-        present(alert, animated: true)
+        let interval = settingsManager.refreshInterval
+        if interval > 0 {
+            refreshTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
+                self?.loadQuizzesFromNetwork(silent: true)
+            }
+        }
+    }
+    
+    private func loadQuizzesFromNetwork(silent: Bool = false) {
+        quizData.loadQuizzesFromNetwork { [weak self] success in
+            DispatchQueue.main.async {
+                // Error notification will be handled by networkErrorOccurred if not silent
+            }
+        }
+    }
+    
+    @objc private func refreshQuizzes() {
+        loadQuizzesFromNetwork(silent: false)
+    }
+    
+    @objc private func quizzesUpdated() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+            self.refreshControl?.endRefreshing()
+        }
+    }
+    
+    @objc private func networkErrorOccurred(_ notification: Notification) {
+        DispatchQueue.main.async {
+            self.refreshControl?.endRefreshing()
+            
+            let error = notification.userInfo?["error"] as? NetworkError
+            let message = error?.errorDescription ?? "Network error occurred"
+            
+            let alert = UIAlertController(
+                title: "Network Error",
+                message: message,
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(alert, animated: true)
+        }
+    }
+    
+    @objc private func settingsTapped() {
+        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(settingsURL)
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowQuestion",
            let questionVC = segue.destination as? QuestionViewController {
-            // Get indexPath from sender (passed from didSelectRowAt) or from selected row
             let indexPath: IndexPath
             if let senderIndexPath = sender as? IndexPath {
                 indexPath = senderIndexPath
@@ -85,19 +182,17 @@ extension QuizListViewController: UITableViewDataSource {
         }
         let quiz = quizData.quizzes[indexPath.row]
         
-        // Truncate title to 30 characters
         let title = quiz.title.count > 30 ? String(quiz.title.prefix(30)) : quiz.title
         cell?.textLabel?.text = title
-        cell?.detailTextLabel?.text = quiz.description
+        cell?.detailTextLabel?.text = quiz.descValue
         
-        // Set icon as emoji using attributed string or image view
-        // Create an image from emoji text
+        // Create icon image from emoji
         let iconSize = CGSize(width: 40, height: 40)
         let renderer = UIGraphicsImageRenderer(size: iconSize)
         let iconImage = renderer.image { context in
             let font = UIFont.systemFont(ofSize: 30)
             let attributes: [NSAttributedString.Key: Any] = [.font: font]
-            let attributedString = NSAttributedString(string: quiz.icon, attributes: attributes)
+            let attributedString = NSAttributedString(string: quiz.iconValue, attributes: attributes)
             let textSize = attributedString.size()
             let textRect = CGRect(
                 x: (iconSize.width - textSize.width) / 2,
@@ -108,8 +203,6 @@ extension QuizListViewController: UITableViewDataSource {
             attributedString.draw(in: textRect)
         }
         cell?.imageView?.image = iconImage
-        
-        // Configure cell appearance
         cell?.accessoryType = .disclosureIndicator
         
         return cell ?? UITableViewCell()

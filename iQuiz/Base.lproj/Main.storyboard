@@ -244,6 +244,73 @@
             </objects>
             <point key="canvasLocation" x="1500" y="0"/>
         </scene>
+        <!--Settings View Controller-->
+        <scene sceneID="settings-scene">
+            <objects>
+                <viewController storyboardIdentifier="SettingsViewController" id="settings-vc" customClass="SettingsViewController" customModule="iQuiz" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="settings-view">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Quiz Data URL:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="url-label">
+                                <rect key="frame" x="20" y="120" width="120" height="20"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter quiz data URL" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="url-textfield">
+                                <rect key="frame" x="20" y="150" width="353" height="34"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" keyboardType="URL" autocapitalizationType="none" autocorrectionType="no"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="check-now-btn">
+                                <rect key="frame" x="146.66666666666666" y="210" width="100" height="40"/>
+                                <state key="normal" title="Check Now"/>
+                                <connections>
+                                    <action selector="checkNowTapped" destination="settings-vc" eventType="touchUpInside" id="check-now-action"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Auto-refresh interval (seconds, 0 to disable):" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="interval-label">
+                                <rect key="frame" x="20" y="280" width="353" height="40"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="0 (disabled)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="interval-textfield">
+                                <rect key="frame" x="20" y="330" width="353" height="34"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                            </textField>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="settings-safe"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="url-label" firstAttribute="leading" secondItem="settings-safe" secondAttribute="leading" constant="20" id="url-label-leading"/>
+                            <constraint firstItem="url-label" firstAttribute="top" secondItem="settings-safe" secondAttribute="top" constant="20" id="url-label-top"/>
+                            <constraint firstItem="url-textfield" firstAttribute="leading" secondItem="settings-safe" secondAttribute="leading" constant="20" id="url-tf-leading"/>
+                            <constraint firstItem="settings-safe" firstAttribute="trailing" secondItem="url-textfield" secondAttribute="trailing" constant="20" id="url-tf-trailing"/>
+                            <constraint firstItem="url-textfield" firstAttribute="top" secondItem="url-label" secondAttribute="bottom" constant="10" id="url-tf-top"/>
+                            <constraint firstItem="check-now-btn" firstAttribute="centerX" secondItem="settings-view" secondAttribute="centerX" id="check-now-center"/>
+                            <constraint firstItem="check-now-btn" firstAttribute="top" secondItem="url-textfield" secondAttribute="bottom" constant="26" id="check-now-top"/>
+                            <constraint firstItem="interval-label" firstAttribute="leading" secondItem="settings-safe" secondAttribute="leading" constant="20" id="interval-label-leading"/>
+                            <constraint firstItem="settings-safe" firstAttribute="trailing" secondItem="interval-label" secondAttribute="trailing" constant="20" id="interval-label-trailing"/>
+                            <constraint firstItem="interval-label" firstAttribute="top" secondItem="check-now-btn" secondAttribute="bottom" constant="30" id="interval-label-top"/>
+                            <constraint firstItem="interval-textfield" firstAttribute="leading" secondItem="settings-safe" secondAttribute="leading" constant="20" id="interval-tf-leading"/>
+                            <constraint firstItem="settings-safe" firstAttribute="trailing" secondItem="interval-textfield" secondAttribute="trailing" constant="20" id="interval-tf-trailing"/>
+                            <constraint firstItem="interval-textfield" firstAttribute="top" secondItem="interval-label" secondAttribute="bottom" constant="10" id="interval-tf-top"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="checkNowButton" destination="check-now-btn" id="check-now-outlet"/>
+                        <outlet property="refreshIntervalLabel" destination="interval-label" id="interval-label-outlet"/>
+                        <outlet property="refreshIntervalTextField" destination="interval-textfield" id="interval-tf-outlet"/>
+                        <outlet property="urlTextField" destination="url-textfield" id="url-tf-outlet"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="settings-first" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2000" y="0"/>
+        </scene>
     </scenes>
     <resources>
         <systemColor name="systemBackgroundColor">

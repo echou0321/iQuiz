@@ -56,7 +56,7 @@ class FinishedViewController: UIViewController {
     private func calculateCorrectAnswers() -> Int {
         var correctCount = 0
         for (index, userAnswer) in userAnswers.enumerated() {
-            if userAnswer == quiz.questions[index].correctAnswerIndex {
+            if userAnswer == quiz.questions[index].correctAnswer {
                 correctCount += 1
             }
         }

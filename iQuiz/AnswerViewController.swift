@@ -39,7 +39,7 @@ class AnswerViewController: UIViewController {
     private func displayAnswer() {
         let question = quiz.questions[currentQuestionIndex]
         let userAnswerIndex = userAnswers[currentQuestionIndex]
-        let correctAnswerIndex = question.correctAnswerIndex
+        let correctAnswerIndex = question.correctAnswer
         
         questionLabel.text = question.text
         correctAnswerLabel.text = "Correct Answer: \(question.answers[correctAnswerIndex])"
@@ -59,27 +59,22 @@ class AnswerViewController: UIViewController {
     
     @IBAction func nextTapped(_ sender: UIButton) {
         if currentQuestionIndex < quiz.questions.count - 1 {
-            // Go to next question
             guard let storyboard = storyboard else { return }
             let questionVC = storyboard.instantiateViewController(withIdentifier: "QuestionViewController") as! QuestionViewController
             questionVC.quiz = quiz
             questionVC.currentQuestionIndex = currentQuestionIndex + 1
             questionVC.userAnswers = userAnswers
-            
             navigationController?.pushViewController(questionVC, animated: true)
         } else {
-            // Go to finished scene
             performSegue(withIdentifier: "ShowFinished", sender: self)
         }
     }
     
     private func setupSwipeGestures() {
-        // Swipe right to go to next
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeRight))
         swipeRight.direction = .right
         view.addGestureRecognizer(swipeRight)
         
-        // Swipe left to abandon quiz
         let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeLeft))
         swipeLeft.direction = .left
         view.addGestureRecognizer(swipeLeft)
@@ -90,18 +85,7 @@ class AnswerViewController: UIViewController {
     }
     
     @objc private func handleSwipeLeft() {
-        let alert = UIAlertController(
-            title: "Abandon Quiz?",
-            message: "Are you sure you want to abandon this quiz? Your progress will be lost.",
-            preferredStyle: .alert
-        )
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Abandon", style: .destructive) { _ in
-            self.navigationController?.popToRootViewController(animated: true)
-        })
-        
-        present(alert, animated: true)
+        showAbandonQuizAlert()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
